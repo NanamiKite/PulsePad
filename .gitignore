@@ -1,0 +1,29 @@
+# Build outputs and copied runtime libraries. Keep vendor/SDL DLLs in source control.
+*.exe
+*.pdb
+*.zip
+/build/
+/native/
+/tests/native/
+
+# Generated icons; assets/rumble.svg is the source.
+/assets/rumble.ico
+/assets/rumble.png
+/assets/icon-sizes.png
+
+# Diagnostics, offscreen renders and generated test fixtures.
+/preview*.png
+/diagnostics*.txt
+*.error.txt
+/tests/ui-*.png
+/tests/song-fixtures/
+
+# Locally imported song caches.
+/songs/*.rumble
+/songs/*.tmp
+
+# Local IDE state.
+/.vs/
+/.vscode/
+*.suo
+*.user

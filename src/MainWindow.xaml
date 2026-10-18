@@ -1,0 +1,233 @@
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="PulsePad · 手柄震动" Width="960" Height="740" MinWidth="800" MinHeight="620"
+        WindowStartupLocation="CenterScreen" Background="#22252A" Foreground="#E4E6E8"
+        FontFamily="Microsoft YaHei UI" FontSize="12" UseLayoutRounding="True">
+  <Window.Resources>
+    <SolidColorBrush x:Key="Ink" Color="#E4E6E8"/>
+    <SolidColorBrush x:Key="Muted" Color="#9399A1"/>
+    <SolidColorBrush x:Key="Accent" Color="#B3CC91"/>
+    <Style TargetType="ScrollBar">
+      <Setter Property="Width" Value="8"/>
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="ScrollBar">
+        <Grid Background="Transparent">
+          <Track x:Name="PART_Track" Orientation="Vertical" IsDirectionReversed="True" Minimum="{TemplateBinding Minimum}" Maximum="{TemplateBinding Maximum}" Value="{TemplateBinding Value}" ViewportSize="{TemplateBinding ViewportSize}">
+            <Track.DecreaseRepeatButton><RepeatButton Command="{x:Static ScrollBar.PageUpCommand}" Focusable="False"><RepeatButton.Template><ControlTemplate TargetType="RepeatButton"><Border Background="Transparent"/></ControlTemplate></RepeatButton.Template></RepeatButton></Track.DecreaseRepeatButton>
+            <Track.Thumb><Thumb><Thumb.Template><ControlTemplate TargetType="Thumb"><Border x:Name="Grip" Background="#4B535D" CornerRadius="3" Margin="1,0"/><ControlTemplate.Triggers><Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Grip" Property="Background" Value="#75808C"/></Trigger></ControlTemplate.Triggers></ControlTemplate></Thumb.Template></Thumb></Track.Thumb>
+            <Track.IncreaseRepeatButton><RepeatButton Command="{x:Static ScrollBar.PageDownCommand}" Focusable="False"><RepeatButton.Template><ControlTemplate TargetType="RepeatButton"><Border Background="Transparent"/></ControlTemplate></RepeatButton.Template></RepeatButton></Track.IncreaseRepeatButton>
+          </Track>
+        </Grid>
+      </ControlTemplate></Setter.Value></Setter>
+    </Style>
+    <Style TargetType="TextBlock"><Setter Property="Foreground" Value="{StaticResource Ink}"/></Style>
+    <Style x:Key="TimeModeButton" TargetType="RadioButton">
+      <Setter Property="Foreground" Value="#9399A1"/>
+      <Setter Property="Cursor" Value="Hand"/>
+      <Setter Property="Padding" Value="10,3"/>
+      <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="RadioButton">
+        <Border x:Name="Surface" Background="Transparent" CornerRadius="4" BorderBrush="Transparent" BorderThickness="1" Padding="{TemplateBinding Padding}"><ContentPresenter/></Border>
+        <ControlTemplate.Triggers>
+          <Trigger Property="IsChecked" Value="True"><Setter TargetName="Surface" Property="Background" Value="#323C2C"/><Setter Property="Foreground" Value="#C5D9AC"/></Trigger>
+          <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Surface" Property="BorderBrush" Value="#526346"/></Trigger>
+          <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="Surface" Property="BorderBrush" Value="#B3CC91"/></Trigger>
+          <Trigger Property="IsEnabled" Value="False"><Setter TargetName="Surface" Property="Opacity" Value="0.45"/></Trigger>
+        </ControlTemplate.Triggers>
+      </ControlTemplate></Setter.Value></Setter>
+    </Style>
+    <Style TargetType="Button">
+      <Setter Property="Background" Value="#2C3036"/>
+      <Setter Property="Foreground" Value="{StaticResource Ink}"/>
+      <Setter Property="BorderBrush" Value="#41464D"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="Padding" Value="16,8"/>
+      <Setter Property="Cursor" Value="Hand"/>
+      <Setter Property="Template">
+        <Setter.Value><ControlTemplate TargetType="Button">
+          <Border x:Name="Surface" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="5" Padding="{TemplateBinding Padding}">
+            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+          </Border>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Surface" Property="Opacity" Value="0.85"/></Trigger>
+            <Trigger Property="IsPressed" Value="True"><Setter TargetName="Surface" Property="Opacity" Value="0.65"/></Trigger>
+            <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="Surface" Property="BorderBrush" Value="#D2D9C9"/></Trigger>
+            <Trigger Property="IsEnabled" Value="False"><Setter TargetName="Surface" Property="Opacity" Value="0.38"/></Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate></Setter.Value>
+      </Setter>
+    </Style>
+    <Style TargetType="ComboBoxItem">
+      <Setter Property="Foreground" Value="{StaticResource Ink}"/>
+      <Setter Property="Padding" Value="12,9"/>
+      <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="ComboBoxItem">
+        <Border x:Name="Item" Background="Transparent" Padding="{TemplateBinding Padding}"><ContentPresenter/></Border>
+        <ControlTemplate.Triggers><Trigger Property="IsHighlighted" Value="True"><Setter TargetName="Item" Property="Background" Value="#3A4148"/></Trigger></ControlTemplate.Triggers>
+      </ControlTemplate></Setter.Value></Setter>
+    </Style>
+    <Style TargetType="ComboBox">
+      <Setter Property="Foreground" Value="{StaticResource Ink}"/>
+      <Setter Property="Background" Value="#292D33"/>
+      <Setter Property="BorderBrush" Value="#41464D"/>
+      <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+      <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="ComboBox">
+        <Grid>
+          <Border x:Name="Frame" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="5"/>
+          <TextBlock Margin="12,0,34,0" VerticalAlignment="Center" IsHitTestVisible="False" TextTrimming="CharacterEllipsis" Text="{Binding SelectedItem.Name,RelativeSource={RelativeSource TemplatedParent}}"/>
+          <ToggleButton Focusable="False" IsChecked="{Binding IsDropDownOpen,RelativeSource={RelativeSource TemplatedParent},Mode=TwoWay}" ClickMode="Press">
+            <ToggleButton.Template><ControlTemplate TargetType="ToggleButton">
+              <Border Background="Transparent"><Path Data="M 0 0 L 4 4 L 8 0" Stroke="#9399A1" StrokeThickness="1.3" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,13,0"/></Border>
+            </ControlTemplate></ToggleButton.Template>
+          </ToggleButton>
+          <Popup x:Name="PART_Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}" AllowsTransparency="True" Focusable="False" PopupAnimation="Fade">
+            <Border Background="#292D33" BorderBrush="#484E56" BorderThickness="1" CornerRadius="5" Margin="0,4,0,0" MinWidth="{Binding ActualWidth,RelativeSource={RelativeSource TemplatedParent}}">
+              <ScrollViewer MaxHeight="240" CanContentScroll="True"><ItemsPresenter/></ScrollViewer>
+            </Border>
+          </Popup>
+        </Grid>
+        <ControlTemplate.Triggers><Trigger Property="IsEnabled" Value="False"><Setter Property="Opacity" Value="0.5"/></Trigger></ControlTemplate.Triggers>
+      </ControlTemplate></Setter.Value></Setter>
+    </Style>
+    <Style TargetType="Slider">
+      <Setter Property="Foreground" Value="{StaticResource Accent}"/>
+      <Setter Property="IsMoveToPointEnabled" Value="True"/>
+      <Setter Property="IsSnapToTickEnabled" Value="True"/>
+      <Setter Property="TickFrequency" Value="1"/>
+      <Setter Property="SmallChange" Value="1"/>
+      <Setter Property="LargeChange" Value="5"/>
+      <Setter Property="Height" Value="30"/>
+      <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="Slider">
+        <Grid Margin="0,3">
+          <Track x:Name="PART_Track">
+            <Track.DecreaseRepeatButton><RepeatButton Command="Slider.DecreaseLarge" Focusable="False"><RepeatButton.Template><ControlTemplate TargetType="RepeatButton"><Border Height="4" VerticalAlignment="Center" CornerRadius="2" Background="{Binding Foreground,RelativeSource={RelativeSource AncestorType=Slider}}"/></ControlTemplate></RepeatButton.Template></RepeatButton></Track.DecreaseRepeatButton>
+            <Track.Thumb><Thumb Width="16" Height="16"><Thumb.Template><ControlTemplate TargetType="Thumb"><Ellipse Fill="{Binding Foreground,RelativeSource={RelativeSource AncestorType=Slider}}" Stroke="#22252A" StrokeThickness="2"/></ControlTemplate></Thumb.Template></Thumb></Track.Thumb>
+            <Track.IncreaseRepeatButton><RepeatButton Command="Slider.IncreaseLarge" Focusable="False"><RepeatButton.Template><ControlTemplate TargetType="RepeatButton"><Border Height="4" VerticalAlignment="Center" CornerRadius="2" Background="#42474F"/></ControlTemplate></RepeatButton.Template></RepeatButton></Track.IncreaseRepeatButton>
+          </Track>
+        </Grid>
+        <ControlTemplate.Triggers><Trigger Property="IsEnabled" Value="False"><Setter Property="Opacity" Value="0.3"/></Trigger></ControlTemplate.Triggers>
+      </ControlTemplate></Setter.Value></Setter>
+    </Style>
+    <Style TargetType="TextBox">
+      <Setter Property="Foreground" Value="{StaticResource Ink}"/>
+      <Setter Property="Background" Value="#292D33"/>
+      <Setter Property="BorderBrush" Value="#41464D"/>
+      <Setter Property="CaretBrush" Value="{StaticResource Accent}"/>
+      <Setter Property="SelectionBrush" Value="#526346"/>
+      <Setter Property="Padding" Value="10,6"/>
+      <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="TextBox">
+        <Border x:Name="Frame" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="5"><ScrollViewer x:Name="PART_ContentHost"/></Border>
+        <ControlTemplate.Triggers>
+          <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="Frame" Property="BorderBrush" Value="{StaticResource Accent}"/></Trigger>
+          <Trigger Property="IsEnabled" Value="False"><Setter Property="Opacity" Value="0.5"/></Trigger>
+        </ControlTemplate.Triggers>
+      </ControlTemplate></Setter.Value></Setter>
+    </Style>
+    <Style TargetType="ListBoxItem">
+      <Setter Property="Padding" Value="12,6"/>
+      <Setter Property="Margin" Value="0,1"/>
+      <Setter Property="Foreground" Value="#BEC3C9"/>
+      <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+      <Setter Property="Cursor" Value="Hand"/>
+      <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="ListBoxItem">
+        <Border x:Name="Row" Background="Transparent" CornerRadius="4" Padding="{TemplateBinding Padding}"><ContentPresenter/></Border>
+        <ControlTemplate.Triggers>
+          <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Row" Property="Background" Value="#282C31"/></Trigger>
+          <Trigger Property="IsSelected" Value="True"><Setter TargetName="Row" Property="Background" Value="#323C2C"/><Setter Property="Foreground" Value="#C5D9AC"/></Trigger>
+        </ControlTemplate.Triggers>
+      </ControlTemplate></Setter.Value></Setter>
+    </Style>
+  </Window.Resources>
+  <Grid x:Name="Root" Background="#22252A" TextOptions.TextFormattingMode="Display" TextOptions.TextRenderingMode="Grayscale">
+    <Grid.ColumnDefinitions><ColumnDefinition Width="212"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+    <Border Background="#191C20" BorderBrush="#33373D" BorderThickness="0,0,1,0" Padding="16,22,16,18">
+      <Grid>
+        <Grid.RowDefinitions><RowDefinition Height="66"/><RowDefinition Height="28"/><RowDefinition Height="*"/><RowDefinition Height="26"/></Grid.RowDefinitions>
+        <StackPanel Margin="11,0,0,0"><TextBlock Text="PulsePad" FontFamily="Segoe UI" FontSize="21" FontWeight="SemiBold"/><TextBlock Text="手柄震动" Foreground="{StaticResource Muted}" Margin="0,4,0,0" FontSize="11"/></StackPanel>
+        <TextBlock Grid.Row="1" Text="模式" Margin="11,2,0,0" Foreground="{StaticResource Muted}" FontSize="11"/>
+        <ListBox Grid.Row="2" x:Name="Modes" Background="Transparent" BorderThickness="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" KeyboardNavigation.TabNavigation="Once">
+          <ListBox.ItemTemplate><DataTemplate>
+            <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="42"/></Grid.ColumnDefinitions>
+              <TextBlock Text="{Binding Name}" Foreground="{Binding Foreground,RelativeSource={RelativeSource AncestorType=ListBoxItem}}"/>
+              <Path Grid.Column="1" Data="{Binding Curve}" Stroke="{Binding Foreground,RelativeSource={RelativeSource AncestorType=ListBoxItem}}" StrokeThickness="1" Opacity="0.6" VerticalAlignment="Center"/>
+            </Grid>
+          </DataTemplate></ListBox.ItemTemplate>
+        </ListBox>
+        <TextBlock Grid.Row="3" x:Name="ModeCount" Text="16 种模式" Margin="11,10,0,0" Foreground="#737B84" FontSize="10"/>
+      </Grid>
+    </Border>
+    <Grid Grid.Column="1" Margin="30,22,30,18">
+      <Grid.RowDefinitions><RowDefinition Height="80"/><RowDefinition Height="*"/><RowDefinition Height="110"/></Grid.RowDefinitions>
+      <Grid VerticalAlignment="Top">
+        <Grid.RowDefinitions><RowDefinition Height="36"/><RowDefinition Height="28"/></Grid.RowDefinitions>
+        <Grid.ColumnDefinitions><ColumnDefinition Width="40"/><ColumnDefinition Width="*"/><ColumnDefinition Width="110"/></Grid.ColumnDefinitions>
+        <TextBlock Text="设备" VerticalAlignment="Center" Foreground="{StaticResource Muted}"/>
+        <ComboBox Grid.Column="1" x:Name="Devices" DisplayMemberPath="Name" AutomationProperties.Name="连接设备"/>
+        <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+          <Ellipse x:Name="ConnectionDot" Width="6" Height="6" Fill="#737B84" Margin="14,0,8,0"/><TextBlock x:Name="ConnectionText" Text="未连接" Foreground="{StaticResource Muted}" FontSize="11"/>
+        </StackPanel>
+        <TextBlock Grid.Row="1" Grid.ColumnSpan="3" x:Name="DeviceDetails" Foreground="{StaticResource Muted}" FontSize="10" Margin="0,8,0,0" TextTrimming="CharacterEllipsis"/>
+      </Grid>
+      <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="0,0,6,0">
+        <StackPanel>
+          <TextBlock x:Name="ModeName" Text="呼吸" FontSize="23" FontWeight="Medium" Margin="0,4,0,4"/>
+          <TextBlock x:Name="ModeDescription" Text="平滑地增强，再慢慢减弱" TextWrapping="Wrap" Foreground="{StaticResource Muted}" Margin="0,0,0,20"/>
+          <StackPanel x:Name="MelodyPanel" Visibility="Collapsed" Margin="0,0,0,18">
+            <Grid Height="36"><Grid.ColumnDefinitions><ColumnDefinition Width="40"/><ColumnDefinition Width="*"/><ColumnDefinition Width="10"/><ColumnDefinition Width="78"/></Grid.ColumnDefinitions>
+              <TextBlock Text="曲目" VerticalAlignment="Center" Foreground="{StaticResource Muted}"/>
+              <ComboBox Grid.Column="1" x:Name="Melodies" DisplayMemberPath="Name" AutomationProperties.Name="旋律曲目"/>
+              <Button Grid.Column="3" x:Name="ImportSong" Content="导入…" Padding="10,6" ToolTip="导入 MIDI / MP3 / WAV"/>
+            </Grid>
+            <TextBlock x:Name="ImportStatus" Visibility="Collapsed" TextWrapping="Wrap" FontSize="11" Margin="0,10,0,0"/>
+            <TextBlock x:Name="SongDetails" Visibility="Collapsed" TextWrapping="Wrap" Foreground="{StaticResource Muted}" FontSize="10" Margin="0,8,0,0"/>
+          </StackPanel>
+          <Border Background="#1C1F24" BorderBrush="#363B42" BorderThickness="1" CornerRadius="5" Height="126" Padding="14,10,14,8" Margin="0,0,0,22">
+            <Grid><Grid.RowDefinitions><RowDefinition Height="23"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+              <TextBlock Text="波形" Foreground="#9399A1" FontSize="10"/>
+              <StackPanel Orientation="Horizontal" HorizontalAlignment="Right"><TextBlock Text="左" Foreground="#B3CC91" FontSize="10"/><TextBlock Text=" / " Foreground="#737B84" FontSize="10"/><TextBlock Text="右" Foreground="#8FA6BD" FontSize="10"/><TextBlock Text="     6 秒" Foreground="#737B84" FontSize="10"/></StackPanel>
+              <Grid Grid.Row="1" x:Name="GraphHost" ClipToBounds="True"/>
+            </Grid>
+          </Border>
+          <Grid Height="72">
+            <Grid.RowDefinitions><RowDefinition Height="28"/><RowDefinition Height="32"/></Grid.RowDefinitions>
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center"><TextBlock Text="左马达" FontSize="13"/><TextBlock x:Name="LeftRole" Text="低频" Foreground="{StaticResource Muted}" FontSize="11" Margin="12,2,0,0"/></StackPanel>
+            <TextBlock x:Name="LeftValue" Text="20%" HorizontalAlignment="Right" Foreground="#B3CC91" FontSize="20" FontFamily="Segoe UI"/>
+            <Slider Grid.Row="1" x:Name="LeftMotor" Minimum="0" Maximum="100" Value="20" AutomationProperties.Name="左马达强度"/>
+          </Grid>
+          <Grid Height="78">
+            <Grid.RowDefinitions><RowDefinition Height="28"/><RowDefinition Height="32"/></Grid.RowDefinitions>
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center"><TextBlock Text="右马达" FontSize="13"/><TextBlock x:Name="RightRole" Text="高频" Foreground="{StaticResource Muted}" FontSize="11" Margin="12,2,0,0"/></StackPanel>
+            <TextBlock x:Name="RightValue" Text="20%" HorizontalAlignment="Right" Foreground="#8FA6BD" FontSize="20" FontFamily="Segoe UI"/>
+            <Slider Grid.Row="1" x:Name="RightMotor" Minimum="0" Maximum="100" Value="20" Foreground="#8FA6BD" AutomationProperties.Name="右马达强度"/>
+          </Grid>
+          <Border Height="1" Background="#363B42" Margin="0,0,0,18"/>
+          <Grid Height="78">
+            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="36"/><ColumnDefinition Width="190"/></Grid.ColumnDefinitions>
+            <Grid><Grid.RowDefinitions><RowDefinition Height="25"/><RowDefinition Height="34"/></Grid.RowDefinitions>
+              <TextBlock x:Name="TempoLabel" Text="周期" Foreground="{StaticResource Muted}"/><TextBlock x:Name="PeriodValue" Text="1.5 秒" HorizontalAlignment="Right"/>
+              <Slider Grid.Row="1" x:Name="Tempo" Minimum="2" Maximum="50" Value="15" AutomationProperties.Name="节奏周期"/>
+            </Grid>
+            <Grid Grid.Column="2"><Grid.RowDefinitions><RowDefinition Height="30"/><RowDefinition Height="34"/></Grid.RowDefinitions>
+              <StackPanel Orientation="Horizontal" Margin="-10,-5,0,4">
+                <RadioButton x:Name="TimedDuration" GroupName="PlaybackDuration" Content="定时" IsChecked="True" Style="{StaticResource TimeModeButton}" AutomationProperties.Name="定时播放"/>
+                <RadioButton x:Name="InfiniteDuration" GroupName="PlaybackDuration" Content="无限" Style="{StaticResource TimeModeButton}" AutomationProperties.Name="无限播放"/>
+              </StackPanel>
+              <Grid Grid.Row="1"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="30"/></Grid.ColumnDefinitions>
+                <TextBox x:Name="Duration" Text="120" MaxLength="5" AutomationProperties.Name="播放秒数" ToolTip="1–86400 秒（最长 24 小时）"/><TextBlock x:Name="DurationUnit" Grid.Column="1" Text="秒" VerticalAlignment="Center" HorizontalAlignment="Right" Foreground="{StaticResource Muted}"/>
+                <TextBlock x:Name="InfiniteHint" Grid.ColumnSpan="2" Text="持续播放，直到手动停止" Visibility="Collapsed" VerticalAlignment="Center" Foreground="{StaticResource Muted}" FontSize="11"/>
+              </Grid>
+            </Grid>
+          </Grid>
+        </StackPanel>
+      </ScrollViewer>
+      <Grid Grid.Row="2">
+        <Grid.RowDefinitions><RowDefinition Height="28"/><RowDefinition Height="44"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+        <TextBlock x:Name="Status" Text="等待手柄连接" Foreground="{StaticResource Muted}" FontSize="11" TextTrimming="CharacterEllipsis" VerticalAlignment="Top"/>
+        <Grid Grid.Row="1"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="12"/><ColumnDefinition Width="134"/><ColumnDefinition Width="120"/></Grid.ColumnDefinitions>
+          <Button x:Name="Start" Content="开始" Background="#B3CC91" Foreground="#20291B" BorderBrush="#B3CC91" FontSize="14" FontWeight="SemiBold"/>
+          <Button Grid.Column="2" x:Name="Stop" Content="停止" Background="#30272A" BorderBrush="#69474D" Foreground="#E0A6AB" FontSize="14"/>
+          <TextBlock Grid.Column="3" x:Name="Remaining" Text="02:00" FontFamily="Consolas" FontSize="26" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="#C7CCD1"/>
+        </Grid>
+        <TextBlock Grid.Row="2" x:Name="Shortcuts" Text="B / Esc 停止     ·     Ctrl+Shift+Space 全局停止" Foreground="#838B94" FontSize="10" Margin="0,13,0,0"/>
+      </Grid>
+    </Grid>
+  </Grid>
+</Window>
