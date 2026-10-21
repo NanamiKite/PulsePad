@@ -12,6 +12,7 @@
 
 ## 咋用
 你可以在点这个链接在网页使用[PulsePad 网页版](https://nanamikite.github.io/PulsePad/)
+
 也可以把release那个安装包解压到任意目录，里面有个 PulsePad.exe，双击运行就行。第一次运行会提示安装 SDL2 驱动，点确定即可。
 
 ## 16 种模式
