@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#171b19">
+  <meta name="description" content="PulsePad 在线手柄震动控制。16 种节奏，双马达强度，定时与无限播放。">
+  <title>PulsePad · 手柄震动</title>
+  <link rel="icon" type="image/svg+xml" href="./icon.svg">
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./app.mjs"></script>
+</head>
+<body>
+  <div class="app">
+    <header class="masthead">
+      <a class="brand" href="./" aria-label="PulsePad 首页"><img src="./icon.svg" width="40" height="40" alt=""><span>PulsePad<small>手柄震动</small></span></a>
+      <nav aria-label="相关链接"><a href="https://github.com/NanamiKite/PulsePad/releases">桌面版 ↗</a><button id="help-open" class="text-button" type="button">使用帮助</button></nav>
+    </header>
+    <main class="console">
+      <aside class="patterns" aria-label="震动模式">
+        <div class="section-label"><span>节奏</span><span class="count">16</span></div>
+        <div id="pattern-list" class="pattern-list"></div>
+      </aside>
+      <div class="workspace">
+        <section class="device-panel" aria-labelledby="device-label">
+          <div class="device-icon" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none"><path d="M11 9h10c4 0 6 5 7 12 .5 4-3 5-5 2l-3-3h-8l-3 3c-2 3-5.5 2-5-2 1-7 3-12 7-12Z"/><path d="M10 12v6m-3-3h6m8-2h.01m3 3h.01"/></svg></div>
+          <div class="device-info"><label id="device-label" for="device">目标手柄</label><select id="device"><option value="">等待连接手柄</option></select><p id="device-hint">连接后按一下手柄按键，即可在这里选择。</p></div>
+          <span class="connection" id="connection"><i></i><span>未连接</span></span>
+        </section>
+
+        <section class="rhythm-panel" aria-labelledby="pattern-title">
+          <div class="rhythm-title"><div><div class="eyebrow">当前节奏</div><h1 id="pattern-title">呼吸</h1><p id="pattern-description">平滑地增强，再慢慢减弱</p></div><span class="pattern-number" id="pattern-number" aria-hidden="true">02 / 16</span></div>
+          <div class="wave-head"><span>强度预览 <span class="muted">/ 6 秒</span></span><span class="legend"><span class="left-dot">低频</span><span class="right-dot">高频</span></span></div>
+          <div class="waveform"><svg id="waveform" viewBox="0 0 720 152" preserveAspectRatio="none" role="img" aria-label="未来六秒的双马达强度预览"><defs><pattern id="grid" width="120" height="46" patternUnits="userSpaceOnUse"><path d="M120 0H0V46" fill="none" stroke="#303830" stroke-width="1"/></pattern></defs><rect x="0" y="0" width="720" height="140" fill="url(#grid)"/><path id="wave-left-fill" fill="#b8d69c" opacity=".07"/><path id="wave-left" class="wave-left"/><path id="wave-right" class="wave-right"/><line id="playhead" x1="0" x2="0" y1="0" y2="140" stroke="#e8eee3" stroke-width="1.5" visibility="hidden"/></svg><div class="wave-axis" aria-hidden="true"><span id="axis-start">0 s</span><span id="axis-end">6 s</span></div></div>
+          <div class="period-row"><label for="period">节奏周期</label><input id="period" type="range" min="0.2" max="5" step="0.1" value="1.5"><output id="period-value" for="period">1.5 <small>秒</small></output></div>
+        </section>
+
+        <section class="motor-panel" aria-label="马达强度">
+          <div class="motor low"><div class="motor-heading"><label for="left">低频马达 <small>通常在左侧</small></label><output id="left-value" for="left">20<span>%</span></output></div><input id="left" type="range" min="0" max="100" step="1" value="20"><div class="range-scale" aria-hidden="true"><span>0</span><span>100%</span></div></div>
+          <div class="motor high"><div class="motor-heading"><label for="right">高频马达 <small>通常在右侧</small></label><output id="right-value" for="right">20<span>%</span></output></div><input id="right" type="range" min="0" max="100" step="1" value="20"><div class="range-scale" aria-hidden="true"><span>0</span><span>100%</span></div></div>
+        </section>
+
+        <section class="time-panel" aria-label="播放时长"><fieldset id="time-options"><legend class="sr-only">播放时长</legend><div class="segmented"><label><input type="radio" name="timing" value="timed" checked><span>定时</span></label><label><input type="radio" name="timing" value="infinite"><span>无限</span></label></div><label class="duration-label" for="duration"><input id="duration" type="number" min="1" max="86400" step="1" value="120" inputmode="numeric" required aria-describedby="duration-error"><span>秒</span></label></fieldset><div class="clock"><span id="clock-label">剩余时间</span><output id="clock">02:00</output></div><p id="duration-error" class="error" hidden>请输入 1–86400 之间的整数秒数</p></section>
+        <div class="transport"><div class="transport-progress" id="transport-progress"></div><div class="transport-inner"><div class="play-status"><span class="status-dot" id="status-dot"></span><div><p id="status" role="status" aria-live="polite">等待连接手柄</p><small id="stop-hint">Esc 停止</small></div></div><div class="transport-buttons"><button id="stop" class="stop-button" disabled type="button"><span aria-hidden="true">■</span> 停止</button><button id="start" class="start-button" disabled type="button"><span aria-hidden="true">▶</span> 开始</button></div></div></div>
+        <p class="foreground-note">请保持此页面可见，切换标签页或最小化会停止。</p>
+      </div>
+    </main>
+    <footer><span>PulsePad <span class="footer-separator">/</span> Web</span><div><a href="https://github.com/NanamiKite/PulsePad">源码 ↗</a><a href="./LICENSE">GPL v3</a></div></footer>
+  </div>
+  <noscript><p class="noscript">请开启 JavaScript 后使用手柄控制。</p></noscript>
+  <dialog id="help" aria-labelledby="help-title"><div class="dialog-heading"><h2 id="help-title">连接你的手柄</h2><button id="help-close" class="close-button" type="button" aria-label="关闭帮助">×</button></div><ol><li>通过 USB、蓝牙或无线接收器连接手柄。</li><li>按一下手柄按键，让浏览器识别设备。</li><li>选好节奏和强度，点击「开始」。</li></ol><p>建议使用桌面版 Chrome / Edge。手柄能被识别，不一定能震动；支持情况取决于浏览器、系统和连接方式。未提供震动功能时，可以试试 USB 连接或 PulsePad 桌面版。</p><p>切换标签页、最小化、锁屏或手柄断开会停止。恢复后请手动开始。Esc 可停止；已映射手柄也可按右侧面键停止。</p><p>两个滑块控制低频与高频通道，实际马达位置由设备决定。网页支持 16 种震动节奏，音乐功能请使用桌面版。</p><a class="dialog-link" href="https://github.com/NanamiKite/PulsePad/releases">获取 Windows 桌面版 ↗</a></dialog>
+</body>
+</html>
